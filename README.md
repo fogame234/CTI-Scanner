@@ -26,6 +26,28 @@ Monitors Telegram channels where threat actors operate. Extracts IOCs, detects s
 
 ---
 
+## Tuning
+
+The default keywords and filters are a starting point. Expect some noise during initial setup and tune the scanner for your specific intelligence requirements.
+
+Alert keywords can be set in `.env` as a comma-separated list:
+
+```env
+ALERT_KEYWORDS=ransomware,stealer log,CVE-,0day,zero-day,data leak,credential dump
+```
+
+Keywords can also be managed from **Settings > Keywords**, while **Settings > Filters** controls relevance filtering, IOC types, ignored domains, stealer detection, and other collection criteria.
+
+Let the scanner collect some data, review the results, and adjust the settings until you're satisfied. Once tuning is complete, clear the test data and start fresh:
+
+```bash
+python reset_data.py
+```
+
+This removes collected data while preserving your configured channels and keywords.
+
+---
+
 ## Quick start
 
 ```bash
@@ -36,7 +58,6 @@ cp .env.example .env
 # Edit .env with your Telegram API credentials from https://my.telegram.org
 python main.py
 ```
-
 First run prompts for a login code. Enter it once, session is cached after that. Open `http://localhost:8080`, go to Settings > Channels, add a channel.
 
 If port 8080 is already in use, change `WEB_PORT` in your `.env`:
@@ -44,7 +65,6 @@ If port 8080 is already in use, change `WEB_PORT` in your `.env`:
 ```
 WEB_PORT=9090
 ```
-
 ---
 
 ## Docker
@@ -67,7 +87,11 @@ volumes:
   cti_archives:
 ```
 
-First-run Telegram login must be done interactively. See the [Docker setup docs](COMPANION-BOT.md) or run `docker compose run --rm cti-scanner python main.py` and enter the code.
+First-run Telegram login must be done interactively. See the [Docker setup docs](COMPANION-BOT.md) or run:
+```bash
+docker compose run --rm cti-scanner python main.py
+```
+Enter the Telegram login code when prompted.
 
 ---
 
@@ -75,7 +99,7 @@ First-run Telegram login must be done interactively. See the [Docker setup docs]
 
 Optional. Configure ntfy from **Settings > Notifications** or via `.env`:
 
-```
+```text
 NTFY_URL=https://ntfy.example.com
 NTFY_TOPIC=cti-alerts
 NTFY_TOKEN=tk_your_token_here
@@ -106,9 +130,9 @@ SQLite by default (zero config, FTS5 search). Elasticsearch available as a drop-
 ## Utilities
 
 ```bash
-python reset_data.py      # purge data, keep channels/keywords
-python migrate.py          # add new tables after updating
-python main.py --web-only  # browse DB without scanner running
+python reset_data.py      # purge collected data after tuning; keep channels/keywords
+python migrate.py         # add new tables after updating
+python main.py --web-only # browse DB without scanner running
 ```
 
 ---
