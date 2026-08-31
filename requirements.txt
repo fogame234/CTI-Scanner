@@ -1,0 +1,7 @@
+telethon>=1.36
+aiosqlite>=0.20
+aiohttp>=3.9
+python-dotenv>=1.0
+cryptography>=42.0                 # encryption for sensitive settings
+python-telegram-bot>=21.0          # optional: companion bot interface
+elasticsearch[async]>=8.12         # optional: ES backend (set DB_BACKEND=elasticsearch)
